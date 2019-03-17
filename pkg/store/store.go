@@ -154,7 +154,7 @@ func generateMovieContent(movie *Movie, tmpl *template.Template) string {
 }
 
 func generateID(movie *Movie) string {
-	titleSlug := strings.ReplaceAll(movie.Title, " ", "-")
+	titleSlug := strings.Replace(movie.Title, " ", "-", -1)
 	if movie.Year > 0 {
 		titleSlug = fmt.Sprintf("%s-%d", titleSlug, movie.Year)
 	}
