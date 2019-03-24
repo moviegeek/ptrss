@@ -75,6 +75,7 @@ func (s *Store) addNewMovie(info pt.MovieInfo, item *gofeed.Item) {
 	}
 
 	s.movies = append(s.movies, movie)
+	s.indexByTitle[movie.Title] = &s.movies[len(s.movies)-1]
 }
 
 //ToRss generate rss xml from the movies in this Store
@@ -133,13 +134,21 @@ func getSiteIDFromURL(url string) string {
 
 func movieToItem(movie *Movie, tmpl *template.Template) *feeds.Item {
 	item := &feeds.Item{
-		Title:   movie.Title,
+		Title:   generateFeedTitle(movie),
 		Id:      generateID(movie),
 		Content: generateMovieContent(movie, tmpl),
 		Link:    &feeds.Link{Href: getFirstLink(movie)},
 	}
 
 	return item
+}
+
+func generateFeedTitle(movie *Movie) string {
+	if movie.Year > 0 {
+		return fmt.Sprintf("%s (%d)", movie.Title, movie.Year)
+	}
+
+	return movie.Title
 }
 
 func generateMovieContent(movie *Movie, tmpl *template.Template) string {
@@ -172,5 +181,8 @@ func getFirstLink(movie *Movie) string {
 
 //New creates a new Store
 func New() *Store {
-	return &Store{}
+	return &Store{
+		movies:       []Movie{},
+		indexByTitle: make(map[string]*Movie),
+	}
 }

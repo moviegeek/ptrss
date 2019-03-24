@@ -84,42 +84,22 @@ func TestAddNewMovie(t *testing.T) {
 
 func TestAddExistingMovie(t *testing.T) {
 	s := New()
-	s.movies = []Movie{
-		{
-			Title:     "The Dawn Wall",
-			Year:      2017,
-			IMDBID:    "",
-			Published: "Fri, 15 Mar 2019 20:24:59 +0800",
-			Updated:   "",
-			PTMedias: []PTMedia{
-				{
-					MovieInfo: pt.MovieInfo{
-						Title:      "Aquaman",
-						Year:       2018,
-						Group:      "HDChina",
-						Source:     pt.Blueray,
-						Resolution: pt.FHD,
-						Size:       19600000000,
-					},
-					Site:       hdcSiteName,
-					Link:       "https://hdchina.org/details.php?id=310862",
-					TorrentURL: "",
-					SiteID:     "310862",
-				},
-			},
-		},
+
+	publishTime, _ := time.Parse(time.RFC3339, "2019-03-15T04:49:47Z0000")
+	item1 := &gofeed.Item{
+		Title:           "Aquaman.2018.1080p.BluRay.x264.DTS-HDChina[19.6 GB]",
+		Description:     "description length: 7595",
+		Content:         "content length: 0",
+		Link:            "https://hdchina.org/details.php?id=310862",
+		Published:       "Fri, 15 Mar 2019 12:49:47 +0800",
+		PublishedParsed: &publishTime,
+		GUID:            "a6a61d07c9de12443asdfscb9f95e752c66a3e71",
+		Categories:      []string{"[电影Movie(1080p)]"},
 	}
 
-	info := pt.MovieInfo{
-		Title:      "Aquaman",
-		Year:       2018,
-		Group:      "HDChina",
-		Source:     pt.Blueray,
-		Resolution: pt.HD,
-		Size:       7030000000,
-	}
-	publishTime, _ := time.Parse(time.RFC3339, "2019-03-15T05:49:47Z0000")
-	item := &gofeed.Item{
+	s.AddFromFeedItem(item1)
+
+	item2 := &gofeed.Item{
 		Title:           "Aquaman.2018.720p.BluRay.x264.DTS-HDChina[7.03 GB]",
 		Description:     "description length: 7595",
 		Content:         "content length: 0",
@@ -130,7 +110,7 @@ func TestAddExistingMovie(t *testing.T) {
 		Categories:      []string{"[电影Movie(720p)]"},
 	}
 
-	s.addExsitMovieFromFeedItem(&s.movies[0], info, item)
+	s.AddFromFeedItem(item2)
 
 	if len(s.movies) != 1 {
 		t.Fatalf("expect only 1 movie in store, but got %d", len(s.movies))
@@ -138,10 +118,10 @@ func TestAddExistingMovie(t *testing.T) {
 
 	newMovies := []Movie{
 		{
-			Title:     "The Dawn Wall",
-			Year:      2017,
+			Title:     "Aquaman",
+			Year:      2018,
 			IMDBID:    "",
-			Published: "Fri, 15 Mar 2019 20:24:59 +0800",
+			Published: "Fri, 15 Mar 2019 12:49:47 +0800",
 			Updated:   "",
 			PTMedias: []PTMedia{
 				{
@@ -182,11 +162,6 @@ func TestAddExistingMovie(t *testing.T) {
 }
 
 func TestToRss(t *testing.T) {
-	f, err := os.OpenFile("rss.xml", os.O_RDWR|os.O_CREATE, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	s := New()
 	s.movies = []Movie{
 		{
@@ -214,5 +189,7 @@ func TestToRss(t *testing.T) {
 		},
 	}
 
-	fmt.Println(s.ToRss(f))
+	if err := s.ToRss(os.Stdout); err != nil {
+		t.Error(err)
+	}
 }
