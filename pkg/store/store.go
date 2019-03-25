@@ -21,11 +21,14 @@ const (
 
 const contentTemplate = `
 IMDB: {{.IMDBID}}
-Download:
+<b/>
+<p>Download:</p>
 {{range .PTMedias}}
-  <a href={{.Link}}>
-	<span>{{.Site}} {{.MovieInfo.Resolution}} {{.MovieInfo.Source}} {{.MovieInfo.Size}}</span>
-  </a>
+<div>
+	<a href={{.Link}}>
+		<span>{{.Site}} {{.MovieInfo.Source}} {{.MovieInfo.Resolution}} {{.MovieInfo.Group}} {{.MovieInfo.Size}}</span>
+	</a>
+</div>
 {{end}}
 `
 
