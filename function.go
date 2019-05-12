@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/moviegeek/omdb"
 	"github.com/moviegeek/ptrss/pkg/parser"
 	"github.com/moviegeek/ptrss/pkg/store"
 
@@ -22,6 +23,7 @@ const (
 	gcsBucketEnv  = "PTRSS_GCS_BUCKET"
 	jsonObjectEnv = "PTRSS_JSON_FILENAME"
 	xmlObjectEnv  = "PTRSS_XML_FILENAME"
+	omdbAPIKeyEnv = "PTRSS_OMDB_APIKEY"
 )
 
 //PubSubMessage the payload of the pub/sub event
@@ -33,6 +35,7 @@ type Config struct {
 	BucketURL     string
 	JsonObjectKey string
 	XmlObjectKey  string
+	OMDBApiKey    string
 }
 
 //UpdateRss is the entry point for gcloud function
@@ -92,9 +95,23 @@ func UpdateRss(ctx context.Context, m PubSubMessage) error {
 		s.AddFromFeedItem(item)
 	}
 
-	movies := s.Movies()
+	omdbClient := omdb.New(config.OMDBApiKey)
 
-	err = json.NewEncoder(jsonFileWriter).Encode(movies)
+	for i, m := range s.Movies() {
+		om, err := omdbClient.ByTitle(m.Title, m.Year)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "failed to search imdb info for movie %s(%d): %v\n", m.Title, m.Year, err)
+			continue
+		}
+
+		fmt.Printf("found IMDB info for movie %s(%d): %s\n", m.Title, m.Year, om.IMDBID)
+		s.Movies()[i].IMDBRating = om.IMDBRating
+		s.Movies()[i].IMDBVotes = om.IMDBVotes
+		s.Movies()[i].Poster = om.Poster
+		s.Movies()[i].IMDBID = om.IMDBID
+	}
+
+	err = json.NewEncoder(jsonFileWriter).Encode(s.Movies())
 	if err != nil {
 		fmt.Printf("failed to store movies json file: %v\n", err)
 	}
@@ -138,6 +155,12 @@ func readEnv() (Config, error) {
 		return config, fmt.Errorf("gcs bucket is not set in environment variable %s", gcsBucketEnv)
 	}
 	config.XmlObjectKey = v
+
+	v = os.Getenv(omdbAPIKeyEnv)
+	if v == "" {
+		return config, fmt.Errorf("omdb apikey is not set in environment variable %s", omdbAPIKeyEnv)
+	}
+	config.OMDBApiKey = v
 
 	return config, nil
 }

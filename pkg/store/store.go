@@ -20,7 +20,18 @@ const (
 )
 
 const contentTemplate = `
-IMDB: {{.IMDBID}}
+{{if .IMDBID}}
+<p>IMDB: 
+	<a href=https://www.imdb.com/title/{{.IMDBID}}>
+		<span>{{.IMDBRating}} / {{.IMDBVotes}}</span>
+	</a>
+</p>
+{{end}}
+{{if .Poster}}
+<div>
+	<img alt="{{.Title}} Poster" title="{{.Title}}" src="{{.Poster}}"/>
+</div>
+{{end}}
 <b/>
 <p>Download:</p>
 {{range .PTMedias}}

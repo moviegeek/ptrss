@@ -167,7 +167,10 @@ func TestToRss(t *testing.T) {
 		{
 			Title:     "The Dawn Wall",
 			Year:      2017,
-			IMDBID:    "",
+			IMDBID:    "tt7286916",
+			IMDBRating: "8.1",
+			IMDBVotes: "6265",
+			Poster: "https://m.media-amazon.com/images/M/MV5BNjE3NzU0NDctZTZjMi00OGE2LWFiOWMtNGZhMjQ1MmViNzZlXkEyXkFqcGdeQXVyNDI3MDA5MDQ@._V1_SY1000_CR0,0,707,1000_AL_.jpg",
 			Published: "Fri, 15 Mar 2019 20:24:59 +0800",
 			Updated:   "",
 			PTMedias: []PTMedia{

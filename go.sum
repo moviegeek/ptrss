@@ -298,6 +298,8 @@ github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf/go.mod h1:pasqhqstsp
 github.com/mna/pigeon v1.0.1-0.20180808201053-bb0192cfc2ae/go.mod h1:Iym28+kJVnC1hfQvv5MUtI6AiFFzvQjHcvI4RFTG/04=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
 github.com/modern-go/reflect2 v1.0.1/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3RllmbCylyMrvgv0=
+github.com/moviegeek/omdb v0.0.0-20190512045518-de7962555485 h1:vljKwGj82qmGdAlPfv9U46w6idp0Z4lBWvmX1gEeHTI=
+github.com/moviegeek/omdb v0.0.0-20190512045518-de7962555485/go.mod h1:OCqOv43xg7U6SM9h7jmAu/+Q//cQWZpm9MBYYeHMo4U=
 github.com/moviegeek/pt v1.0.1 h1:RVofJnFAczmctsp6qIniEF7ex8le7FhKocvvptOtVqE=
 github.com/moviegeek/pt v1.0.1/go.mod h1:Cy0GpzFn4SwxsrJ56+9fv4QcdiNtSmpUbfifQpsXyKI=
 github.com/moviegeek/pt v1.1.0 h1:oCQxS1L7Wc8f73yn6hRbY9uyteAuYFh1kjVPek4oazw=
