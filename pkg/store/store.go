@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"sort"
 	"strings"
 	"text/template"
 	"time"
@@ -106,6 +107,8 @@ func (s *Store) ToRss(w io.Writer) error {
 	if err != nil {
 		return fmt.Errorf("failed to parse content template: %v", err)
 	}
+
+	sort.Slice(s.movies, func(i, j int) bool { return s.movies[i].Year > s.movies[j].Year })
 
 	for _, movie := range s.movies {
 		item := movieToItem(&movie, tmpl)
